@@ -10,8 +10,8 @@ function [configs, configGrids] = SimIsingPart(L, beta, J, N)
 % are the corresponding grids. It should be noted that for larger values of 
 % L, the config numbers are too big for computers and NaN's will appear in
 % the config array.
-%     c = 2*randi([0, 1],[L, L]) - 1; % initialize the grid randomly
-    c = ones(L,L);
+    c = 2*randi([0, 1],[L, L]) - 1; % initialize the grid randomly
+    c(2,2) = -1;
     NSweeps = N; NSweepThreshold = 100; idx=1;
     
     configs = zeros(1, NSweeps - NSweepThreshold);
@@ -22,6 +22,9 @@ function [configs, configGrids] = SimIsingPart(L, beta, J, N)
     [X,Y] = meshgrid(1:L, 1:L);
     configGrids = zeros(L,L,NSweeps-NSweepThreshold);
     for itr = 1:NSweeps
+        if mod(itr, 1000)==0
+            c = 2*randi([0, 1],[L, L]) - 1; % reset the randomness incase
+        end
         % Partition the grid into inter-crossing sub-grids
         red = (mod(X+Y, 2)==0) & ((X<L) & (Y<L)); red(L,L)=true; 
         blue = mod(X+Y, 2)==1 & ((X<L) & (Y<L));
